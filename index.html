@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>剑宗的网站</title>
+    <!-- 引入Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome图标库 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <!-- 自定义样式 -->
+    <style>
+        .download-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* 背景图设置 */
+        body {
+            background-image: url('https://img.picui.cn/free/2025/05/14/68242c1cc0fa5.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .content-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 640px;
+        }
+        .bg-bilibili {
+            background-color: #FB7299;
+        }
+        .hover\:bg-bilibili:hover {
+            background-color: #FF85AD;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="content-container">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">
+            <img src="https://img.picui.cn/free/2025/05/14/68242c1bc21b9.jpg" 
+                 alt="网站图标"
+                 class="w-10 h-10 inline-block mr-2 rounded-full">
+            剑宗的网站
+        </h1>
+
+        <div class="space-y-4 w-full">
+            <!-- 下载按钮1 -->
+            <button 
+                onclick="window.location.href='https://wwpb.lanzouw.com/b00ya22x0d'"
+                class="download-btn w-full bg-blue-500 hover:bg-blue-600 text-white py-4 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center">
+                <i class="fas fa-download mr-3 text-lg"></i>
+                <div class="text-left flex-1">
+                    <div class="font-medium">不虚系列工具包</div>
+                    <div class="text-sm opacity-80 mt-1">密码：8bgs</div>
+                </div>
+            </button>
+
+            <!-- 下载按钮2 -->
+            <button 
+                onclick="window.location.href='https://wwpb.lanzouw.com/b00ya6vgod'"
+                class="download-btn w-full bg-blue-500 hover:bg-blue-600 text-white py-4 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center">
+                <i class="fas fa-download mr-3 text-lg"></i>
+                <div class="text-left flex-1">
+                    <div class="font-medium">信息课工具箱</div>
+                    <div class="text-sm opacity-80 mt-1">密码：butq</div>
+                </div>
+            </button>
+
+            <!-- B站主页按钮 -->
+            <button 
+                onclick="window.location.href='https://space.bilibili.com/539794410'"
+                class="download-btn w-full bg-bilibili hover:bg-bilibili text-white py-4 px-6 rounded-lg shadow-md hover:shadow-lg flex justify-between items-center">
+                <div class="text-left">
+                    <div class="font-medium">哔哩哔哩主页</div>
+                    <div class="text-sm opacity-80 mt-1">UID: 539794410</div>
+                </div>
+                <i class="fab fa-bilibili text-xl"></i>
+            </button>
+        </div>
+    </div>
+</body>
+</html>
