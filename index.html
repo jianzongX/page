@@ -10,24 +10,19 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <!-- 自定义样式 -->
     <style>
-        /* 按钮样式 */
-        .download-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-                        0 2px 4px -1px rgba(0, 0, 0, 0.06),
-                        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+        /* 基础设置 */
+        :root {
+            --primary-color: #3B82F6;
+            --secondary-color: #FB7299;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
         }
-        .download-btn:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
-                        0 4px 6px -2px rgba(0, 0, 0, 0.05),
-                        inset 0 -3px 6px rgba(0, 0, 0, 0.1);
-            transform: translateY(-1px);
-        }
-        .download-btn:active {
-            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 
-                        0 1px 2px -1px rgba(0, 0, 0, 0.05),
-                        inset 0 2px 4px rgba(0, 0, 0, 0.1);
-            transform: translateY(1px);
+        
+        /* 平滑滚动和字体渲染优化 */
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         /* 背景图设置 */
@@ -36,235 +31,493 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            color: var(--text-dark);
         }
         
-        /* 内容容器 */
-        .content-container {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        /* 按钮基础样式 */
+        .btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+                        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
+            letter-spacing: 0.025em;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+                        0 4px 6px -2px rgba(0, 0, 0, 0.05),
+                        inset 0 -3px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 
+                        0 1px 2px -1px rgba(0, 0, 0, 0.05),
+                        inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 毛玻璃效果容器 */
+        .glass-container {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
         
-        /* 通知窗口样式 */
-        .notice-container {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 0.75rem;
-            padding: 1rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            max-height: 200px;
+        .glass-container:hover {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 时间显示样式 */
+        .time-segment {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 3.5rem;
+        }
+        
+        .time-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #f3f4f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .time-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .time-separator {
+            font-size: 1.5rem;
+            opacity: 0.6;
+            align-self: flex-end;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* 通知区域样式 */
+        .notice-content {
+            line-height: 1.6;
+            max-height: 120px;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) transparent;
         }
         
-        /* 熄灯游戏样式 */
+        .notice-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .notice-content::-webkit-scrollbar-thumb {
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+        
+        /* 游戏格子样式 */
         .cell {
             transition: all 0.2s ease;
             aspect-ratio: 1/1;
             position: relative;
-            width: 50px;
-            height: 50px;
+            width: 100%;
+            border-radius: 0.5rem;
         }
+        
         .cell.on {
-            box-shadow: 0 0 5px #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+            transform: scale(1.03);
         }
+        
+        /* 胜利消息样式 */
         .win-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            font-weight: bold;
+            background: rgba(0, 0, 0, 0.8);
             border-radius: 0.5rem;
             z-index: 10;
-        }
-        .win-title {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        .win-steps {
-            font-size: 1rem;
-            color: #FFD700;
-        }
-        .game-container {
-            position: relative;
-            margin: 0 auto;
-            width: fit-content;
+            animation: fadeIn 0.3s ease-out;
         }
         
-        /* 分割布局 */
-        .split-layout {
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* 一言样式 */
+        .hitokoto-container {
+            min-height: 80px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
+            flex-direction: column;
             justify-content: center;
-            width: 90%;
-            max-width: 1000px;
-            margin-bottom: 1.5rem;
-        }
-        .panel {
-            flex: 1;
-            min-width: 280px;
-        }
-        .game-panel {
-            max-width: 280px;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
         }
         
-        /* 按钮容器样式 */
-        .button-container {
-            display: flex;
-            gap: 0.5rem;
-            width: 100%;
-        }
-        .half-button {
-            flex: 1;
-            min-width: 0;
+        .hitokoto-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            color: white;
         }
         
-        /* B站按钮样式 */
-        .bg-bilibili {
-            background-color: #FB7299;
+        .hitokoto-from {
+            font-size: 0.9rem;
+            text-align: right;
+            opacity: 0.8;
+            color: rgba(255, 255, 255, 0.8);
         }
-        .hover\:bg-bilibili:hover {
-            background-color: #FF85AD;
-        }
-        .split-button-container {
+        
+        /* 新按钮样式 */
+        .square-btn {
             display: flex;
-            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .square-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .square-btn .btn-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .square-btn .btn-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        /* 标题和一言并排布局 */
+        .header-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .title-container {
+            flex: 1;
+        }
+        
+        .hitokoto-wrapper {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        /* 游戏面板新布局 */
+        .game-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+        
+        .game-board-wrapper {
+            flex: 1;
+            max-width: 180px;
+        }
+        
+        .game-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            padding-top: 0.5rem;
+        }
+        
+        /* 横排步数显示 */
+        .steps-horizontal {
+            font-size: 1.2rem;
+            color: white;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
             gap: 0.5rem;
         }
-        .split-button {
-            flex: 1;
-            border-radius: 0.75rem !important;
+        
+        .steps-count {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        /* 重新开始按钮 */
+        .restart-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .restart-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .restart-btn:active {
+            transform: translateY(1px);
+        }
+        
+        /* 按钮区域紧凑布局 */
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .time-value {
+                font-size: 1.3rem;
+            }
+            
+            .time-segment {
+                min-width: 3rem;
+            }
+            
+            .split-layout {
+                flex-direction: column;
+            }
+            
+            .panel, .game-panel {
+                min-width: 100%;
+                max-width: 100%;
+            }
+            
+            .bottom-container {
+                flex-direction: column;
+            }
+            
+            .notice-container {
+                max-width: 100%;
+            }
+            
+            .square-btn {
+                padding: 0.75rem;
+            }
+            
+            .header-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .hitokoto-wrapper {
+                min-width: 100%;
+            }
+            
+            .game-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .button-group {
+                gap: 0.5rem;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
-    <div class="split-layout">
-        <!-- 左侧面板 - 原有功能 -->
-        <div class="panel content-container">
-            <h1 class="text-3xl font-bold text-gray-800 mb-6">
-                <img src="https://img.picui.cn/free/2025/05/14/68242c1bc21b9.jpg" 
-                     alt="网站图标"
-                     class="w-10 h-10 inline-block mr-2 rounded-full">
-                剑宗的网站
-            </h1>
-
-            <div class="space-y-4 w-full">
-                <!-- 合并后的下载按钮行 -->
-                <div class="button-container">
-                    <!-- 不虚系列工具包按钮 -->
-                    <button 
-                        onclick="window.location.href='https://wwpb.lanzouw.com/b00ya22x0d'"
-                        class="download-btn half-button bg-blue-500 hover:bg-blue-600 text-white py-3 px-2 rounded-lg flex items-center">
-                        <i class="fas fa-download mr-2 text-base"></i>
-                        <div class="text-left flex-1 truncate">
-                            <div class="font-medium text-sm truncate">不虚工具包</div>
-                            <div class="text-xs opacity-80 mt-0.5 truncate">密码：8bgs</div>
-                        </div>
-                    </button>
-                    
-                    <!-- 信息课工具箱按钮 -->
-                    <button 
-                        onclick="window.location.href='https://wwpb.lanzouw.com/b00ya6vgod'"
-                        class="download-btn half-button bg-blue-500 hover:bg-blue-600 text-white py-3 px-2 rounded-lg flex items-center">
-                        <i class="fas fa-download mr-2 text-base"></i>
-                        <div class="text-left flex-1 truncate">
-                            <div class="font-medium text-sm truncate">信息工具箱</div>
-                            <div class="text-xs opacity-80 mt-0.5 truncate">密码：butq</div>
-                        </div>
-                    </button>
+<body class="flex flex-col items-center justify-center p-4 sm:p-6">
+    <!-- 主内容区域 -->
+    <div class="w-full max-w-6xl space-y-6">
+        <!-- 标题和一言并排 -->
+        <div class="header-row">
+            <!-- 标题区域 -->
+            <div class="glass-container p-6 title-container">
+                <div class="flex items-center space-x-3">
+                    <img src="https://img.picui.cn/free/2025/05/14/68242c1bc21b9.jpg" 
+                         alt="网站图标"
+                         class="w-12 h-12 rounded-full border-2 border-white/30">
+                    <h1 class="text-3xl font-bold text-white">剑宗的网站</h1>
                 </div>
-
-                <!-- 分割式B站按钮容器 -->
-                <div class="split-button-container">
-                    <!-- 左侧大号按钮 -->
-                    <button 
-                        onclick="window.location.href='https://space.bilibili.com/539794410'"
-                        class="download-btn split-button bg-bilibili hover:bg-bilibili text-white py-3 px-4 flex justify-between items-center">
-                        <div class="text-left">
-                            <div class="font-medium text-sm">哔哩哔哩(剑宗X)</div>
-                            <div class="text-xs opacity-80 mt-1">UID: 539794410</div>
-                        </div>
-                        <i class="fab fa-bilibili text-lg"></i>
-                    </button>
-                    
-                    <!-- 右侧小号按钮 -->
-                    <button 
-                        onclick="window.location.href='https://space.bilibili.com/3493104705342335'"
-                        class="download-btn split-button bg-bilibili hover:bg-bilibili text-white py-3 px-4 flex justify-between items-center">
-                        <div class="text-left">
-                            <div class="font-medium text-sm">哔哩哔哩(剑宗Y)</div>
-                            <div class="text-xs opacity-80 mt-1">UID: 3493104705342335</div>
-                        </div>
-                        <i class="fab fa-bilibili text-lg"></i>
-                    </button>
+            </div>
+            
+            <!-- 一言区域 -->
+            <div class="hitokoto-wrapper">
+                <div class="hitokoto-container">
+                    <div id="hitokoto-text" class="hitokoto-text">正在加载一言...</div>
+                    <div id="hitokoto-from" class="hitokoto-from"></div>
                 </div>
             </div>
         </div>
-
-        <!-- 右侧面板 - 熄灯游戏 -->
-        <div class="panel content-container game-panel">
-            <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">熄灯游戏</h1>
-            
-            <!-- 游戏棋盘容器 -->
-            <div class="game-container mb-3">
-                <div id="gameBoard" class="grid grid-cols-3 gap-1"></div>
-                <!-- 胜利消息容器 -->
-                <div id="winMessage" class="win-overlay hidden"></div>
+        
+        <!-- 主面板布局 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- 左侧功能面板 - 按钮区域 -->
+            <div class="glass-container p-6 lg:col-span-2">
+                <div class="buttons-container">
+                    <!-- 下载按钮组 -->
+                    <div class="button-group">
+                        <button onclick="window.location.href='https://wwpb.lanzouw.com/b00ya22x0d'"
+                            class="square-btn bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
+                            <i class="fas fa-download"></i>
+                            <div class="btn-title">不虚工具包</div>
+                            <div class="btn-subtitle">密码: 8bgs</div>
+                        </button>
+                        
+                        <button onclick="window.location.href='https://wwpb.lanzouw.com/b00ya6vgod'"
+                            class="square-btn bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
+                            <i class="fas fa-download"></i>
+                            <div class="btn-title">信息工具箱</div>
+                            <div class="btn-subtitle">密码: butq</div>
+                        </button>
+                    </div>
+                    
+                    <!-- B站按钮组 -->
+                    <div class="button-group">
+                        <button onclick="window.location.href='https://space.bilibili.com/539794410'"
+                            class="square-btn bg-gradient-to-br from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white">
+                            <i class="fab fa-bilibili"></i>
+                            <div class="btn-title">剑宗X</div>
+                            <div class="btn-subtitle">UID: 539794410</div>
+                        </button>
+                        
+                        <button onclick="window.location.href='https://space.bilibili.com/3493104705342335'"
+                            class="square-btn bg-gradient-to-br from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white">
+                            <i class="fab fa-bilibili"></i>
+                            <div class="btn-title">剑宗Y</div>
+                            <div class="btn-subtitle">UID: 3493104705342335</div>
+                        </button>
+                    </div>
+                </div>
             </div>
             
-            <!-- 控制区域 -->
-            <div class="flex justify-between items-center">
-                <div id="stats" class="text-sm text-gray-600">步数: 0</div>
-                <button onclick="restartGame()" class="download-btn px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded transition text-sm">
-                    <i class="fas fa-redo"></i> 重新开始
-                </button>
+            <!-- 右侧游戏面板 - 新布局 -->
+            <div class="glass-container p-6">
+                <h2 class="text-2xl font-bold text-white mb-4 text-center">熄灯游戏</h2>
+                
+                <div class="game-container">
+                    <!-- 游戏棋盘 -->
+                    <div class="game-board-wrapper">
+                        <div class="relative">
+                            <div id="gameBoard" class="grid grid-cols-3 gap-2"></div>
+                            <div id="winMessage" class="win-overlay hidden">
+                                <div class="text-2xl font-bold text-white mb-2">胜利!</div>
+                                <div class="text-yellow-300">步数: <span id="win-steps">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 游戏控制 - 右侧横排 -->
+                    <div class="game-controls">
+                        <!-- 横排步数显示 -->
+                        <div class="steps-horizontal">
+                            <span>步数:</span>
+                            <span class="steps-count" id="stats">0</span>
+                        </div>
+                        
+                        <!-- 重新开始按钮 -->
+                        <button onclick="restartGame()" class="restart-btn" title="重新开始">
+                            <i class="fas fa-redo text-white"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- 通知窗口 -->
-    <div class="content-container notice-container w-90 max-w-1000px">
-        <h2 class="text-xl font-bold text-gray-800 mb-2">通知公告</h2>
-        <div id="noticeContent" class="text-gray-700">
-            正在加载通知内容...
+        
+        <!-- 底部信息栏 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- 时间显示 -->
+            <div class="glass-container p-5 lg:col-span-2">
+                <div class="flex justify-center items-center space-x-1 sm:space-x-2">
+                    <div class="time-segment">
+                        <div id="year" class="time-value">----</div>
+                        <div class="time-label">年</div>
+                    </div>
+                    <div class="time-separator">/</div>
+                    <div class="time-segment">
+                        <div id="month" class="time-value">--</div>
+                        <div class="time-label">月</div>
+                    </div>
+                    <div class="time-separator">/</div>
+                    <div class="time-segment">
+                        <div id="day" class="time-value">--</div>
+                        <div class="time-label">日</div>
+                    </div>
+                    <div class="time-separator hidden sm:inline">|</div>
+                    <div class="time-segment">
+                        <div id="hour" class="time-value">--</div>
+                        <div class="time-label">时</div>
+                    </div>
+                    <div class="time-separator">:</div>
+                    <div class="time-segment">
+                        <div id="minute" class="time-value">--</div>
+                        <div class="time-label">分</div>
+                    </div>
+                    <div class="time-separator">:</div>
+                    <div class="time-segment">
+                        <div id="second" class="time-value">--</div>
+                        <div class="time-label">秒</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 通知公告 -->
+            <div class="glass-container p-5">
+                <h3 class="text-lg font-bold text-white mb-3">通知公告</h3>
+                <div id="noticeContent" class="notice-content text-white/90">
+                    正在加载通知内容...
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // 熄灯游戏逻辑
+        // 游戏逻辑
         const boardSize = 3;
         let gameBoard = [];
         let moves = 0;
         let gameActive = true;
 
-        // 初始化游戏（随机状态）
+        // 初始化游戏
         function initGame() {
             gameActive = true;
-            // 创建随机初始棋盘
             gameBoard = Array.from({ length: boardSize }, () => 
                 Array.from({ length: boardSize }, () => Math.random() > 0.5)
             );
             moves = 0;
             updateStats();
             renderBoard();
-            // 隐藏胜利消息
             document.getElementById('winMessage').classList.add('hidden');
-            // 确保统计信息正常显示
-            document.getElementById('stats').classList.remove('hidden');
         }
 
         // 重新开始游戏
@@ -280,12 +533,7 @@
             for (let i = 0; i < boardSize; i++) {
                 for (let j = 0; j < boardSize; j++) {
                     const cell = document.createElement('div');
-                    // 胜利后所有格子设为绿色
-                    const cellClass = gameActive 
-                        ? `cell rounded-sm ${gameActive ? 'cursor-pointer' : ''} ${gameBoard[i][j] ? 'bg-yellow-400 on' : 'bg-gray-800'}`
-                        : 'cell rounded-sm bg-green-500';
-                    
-                    cell.className = cellClass;
+                    cell.className = `cell ${gameBoard[i][j] ? 'bg-yellow-400 on' : 'bg-gray-800'}`;
                     cell.dataset.row = i;
                     cell.dataset.col = j;
                     
@@ -302,10 +550,8 @@
         function toggleLights(row, col) {
             if (!gameActive) return;
             
-            // 切换当前灯
             gameBoard[row][col] = !gameBoard[row][col];
             
-            // 切换相邻灯
             const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
             directions.forEach(([dx, dy]) => {
                 const newRow = row + dx;
@@ -326,58 +572,72 @@
             const allOff = gameBoard.flat().every(cell => !cell);
             if (allOff) {
                 gameActive = false;
-                showWinMessage();
-                // 胜利后隐藏统计信息
-                document.getElementById('stats').classList.add('hidden');
+                document.getElementById('win-steps').textContent = moves;
+                document.getElementById('winMessage').classList.remove('hidden');
             }
         }
 
-        // 显示胜利消息
-        function showWinMessage() {
-            const winMessage = document.getElementById('winMessage');
-            // 胜利字体变大，并添加步数信息
-            winMessage.innerHTML = `
-                <div class="win-title">胜利!</div>
-                <div class="win-steps">你用了 ${moves} 步获胜</div>
-            `;
-            winMessage.classList.remove('hidden');
-        }
-
-        // 更新状态显示
+        // 更新步数显示
         function updateStats() {
-            const statsElement = document.getElementById('stats');
-            statsElement.textContent = `步数: ${moves}`;
-            // 仅在游戏进行中更新显示，胜利后不修改
-            if (!gameActive) {
-                statsElement.classList.add('hidden');
-            } else {
-                statsElement.classList.remove('hidden');
-                statsElement.innerHTML = `步数: ${moves}`;
-            }
+            document.getElementById('stats').textContent = moves;
         }
 
-        // 加载通知内容
+        // 加载通知
         function loadNotice() {
             fetch('notice.txt')
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('通知文件加载失败');
-                    }
+                    if (!response.ok) throw new Error('通知加载失败');
                     return response.text();
                 })
                 .then(text => {
-                    document.getElementById('noticeContent').innerHTML = text.replace(/\n/g, '<br>');
+                    const cleanedText = text.trim().replace(/\n{2,}/g, '\n');
+                    document.getElementById('noticeContent').innerHTML = 
+                        cleanedText.replace(/\n/g, '<br>');
                 })
                 .catch(error => {
-                    console.error('加载通知时出错:', error);
-                    document.getElementById('noticeContent').textContent = '无法加载通知内容';
+                    console.error('加载通知出错:', error);
+                    document.getElementById('noticeContent').textContent = '暂无通知';
                 });
         }
 
-        // 页面加载后自动开始游戏和加载通知
+        // 加载一言
+        function loadHitokoto() {
+            // 使用一言API (Hitokoto)
+            fetch('https://v1.hitokoto.cn/')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('hitokoto-text').textContent = data.hitokoto;
+                    document.getElementById('hitokoto-from').textContent = `—— ${data.from || '未知'}`;
+                })
+                .catch(error => {
+                    console.error('加载一言出错:', error);
+                    document.getElementById('hitokoto-text').textContent = '生活就像海洋，只有意志坚强的人才能到达彼岸';
+                    document.getElementById('hitokoto-from').textContent = '—— 卡尔·马克思';
+                });
+        }
+
+        // 更新时间
+        function updateTime() {
+            const now = new Date();
+            
+            document.getElementById('year').textContent = now.getFullYear();
+            document.getElementById('month').textContent = String(now.getMonth() + 1).padStart(2, '0');
+            document.getElementById('day').textContent = String(now.getDate()).padStart(2, '0');
+            document.getElementById('hour').textContent = String(now.getHours()).padStart(2, '0');
+            document.getElementById('minute').textContent = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('second').textContent = String(now.getSeconds()).padStart(2, '0');
+        }
+
+        // 页面加载
         window.onload = function() {
             initGame();
             loadNotice();
+            loadHitokoto();
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // 每小时刷新一言
+            setInterval(loadHitokoto, 3600000);
         };
     </script>
 </body>
